@@ -1,182 +1,185 @@
 # Differential Privacy in Data Analytics
 
-This repository contains our **CS4413 Winter 2026** project on **differential privacy in data analytics**.  
-The project compares two widely used privacy mechanisms:
+This repository contains a CS4413 Winter 2026 project that compares the Laplace and Gaussian mechanisms for differential privacy on simple aggregate queries over the Adult Income dataset.
 
-- **Laplace Mechanism**
-- **Gaussian Mechanism**
+The analysis focuses on the privacy-utility trade-off for:
 
-We evaluate both mechanisms on the **Adult Income dataset** using three common statistical query types:
+- count queries
+- mean queries
+- histogram queries
 
-- **Count query**
-- **Mean query**
-- **Histogram query**
+## What the Project Does
 
-The goal is to study the **privacy-utility trade-off** by measuring how different privacy budgets affect the accuracy of released statistics.
+The Python script evaluates both mechanisms on the UCI Adult Income dataset and measures accuracy under different privacy budgets.
 
----
+Queries included:
 
-## Project Overview
+- Count of individuals with income `>50K`
+- Mean age
+- Histogram of education levels
 
-Differential privacy (DP) is a formal framework for protecting individual privacy when releasing information derived from datasets. In this project, we compare the Laplace and Gaussian mechanisms on simple aggregate queries and analyze how increasing or decreasing the privacy budget impacts utility.
+Privacy parameters:
 
-### Queries Tested
-- **Count:** Number of individuals earning more than \$50K
-- **Mean:** Average age
-- **Histogram:** Distribution of education levels
+- `epsilon`: `0.1`, `0.5`, `1.0`, `2.0`
+- `delta`: `1e-5` for the Gaussian mechanism
 
-### Privacy Settings
-- **Epsilon values:** `{0.1, 0.5, 1.0, 2.0}`
-- **Delta (Gaussian only):** `1e-5`
+Evaluation metrics:
 
-### Evaluation Metrics
-- **Mean Absolute Error (MAE)**
-- **Mean Squared Error (MSE)**
+- Mean Absolute Error (MAE)
+- Mean Squared Error (MSE)
 
----
+## Repository Contents
+
+This repo is organized as follows:
+
+- `src/test.py`: main experiment script
+- `data/dp_results_summary.csv`: summary of DP experiment results
+- `data/education_histogram_true.csv`: true education histogram counts
+- `data/CS4413_Final_Report_DP_Results.xlsx`: spreadsheet version of the results
+- `figures/`: charts used in the report and presentation
+- `report/`: project reports in PDF form
+- `slides/`: presentation materials
+- `README.md`: project documentation
 
 ## Dataset
 
-This project uses the **Adult Income dataset** from the **UCI Machine Learning Repository**.
+The project uses the Adult Income dataset from the UCI Machine Learning Repository. The script downloads the data directly from:
 
-After preprocessing and removing missing values, the cleaned dataset contains:
+`https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data`
 
-- **30,162 records**
-- attributes relevant to:
-  - age
-  - hours-per-week
-  - income
-  - education
+Preprocessing performed in `src/test.py`:
 
----
+- treats `?` as missing data
+- removes rows with missing values
+- clips age to the range `17` to `90` to keep sensitivity bounded
 
-## Methods
+After cleaning, the dataset contains `30,162` rows.
+
+## Differential Privacy Methods
 
 ### Laplace Mechanism
-Used for pure **ε-differential privacy**.
 
-Noise added:
+Used for pure `epsilon`-differential privacy:
 
 ```math
 \text{Laplace}(0, \Delta f / \varepsilon)
 ```
-Gaussian Mechanism
-Used for approximate (ε, δ)-differential privacy.
-Noise added:
 
-𝑁
-(
-0
-,
-𝜎
-2
-)
-N(0,σ
-2
-)
+### Gaussian Mechanism
 
-with noise scale calibrated using query sensitivity, ε, and δ.
+Used for approximate `(epsilon, delta)`-differential privacy. The script uses the standard calibration:
 
-Sensitivity Used
-Count query: Δf = 1
-Mean age query: Δf = (max(age) - min(age)) / n
-Histogram query: Δf = 1
-Repository Structure
-.
-├── src/           # Source code
-├── data/          # Dataset files / processed CSV files
-├── results/       # Experimental outputs and result summaries
-├── figures/       # Graphs and charts used in report/presentation
-├── slides/        # Presentation materials
-├── report/        # Final report
-└── README.md
+```math
+\sigma = \frac{\Delta f \sqrt{2 \ln(1.25/\delta)}}{\varepsilon}
+```
 
-You can adjust this section if your folder names are slightly different.
+Noise is then sampled from:
 
-Requirements
+```math
+\mathcal{N}(0, \sigma^2)
+```
 
-This project was implemented in Python 3 using:
+### Sensitivities Used
 
-pandas
-numpy
+- Count query: `1`
+- Mean age query: `(AGE_MAX - AGE_MIN) / n`
+- Education histogram:
+  - Laplace per-bin sensitivity: `1`
+  - Gaussian vector `L2` sensitivity: `1`
+
+## Requirements
+
+This project uses Python 3 and requires:
+
+- `pandas`
+- `numpy`
 
 Install dependencies with:
 
+```bash
 pip install pandas numpy
-Running the Code
+```
 
-Run the main script with:
+Or use:
 
-python test.py
+```bash
+pip install -r requirements.txt
+```
 
-Depending on your file layout, you may rename this to:
+## Running the Project
 
-python src/main.py
+Run the experiment with:
+
+```bash
+python3 src/test.py
+```
 
 The script:
 
-loads and preprocesses the Adult Income dataset
-computes non-private baseline statistics
-applies Laplace and Gaussian mechanisms
-runs repeated trials for each query and privacy budget
-computes MAE and MSE
-saves summary results to CSV files
-Output Files
+- downloads and cleans the Adult dataset
+- computes non-private baseline statistics
+- applies Laplace and Gaussian noise
+- repeats each experiment across multiple trials
+- reports MAE and MSE
+- writes output CSV files
 
-Typical outputs include:
+## Output Files
 
-dp_results_summary.csv
-education_histogram_true.csv
+Running the script generates:
 
-These files are used to generate:
+- `data/dp_results_summary.csv`
+- `data/education_histogram_true.csv`
 
-result tables
-privacy-utility graphs
-report figures
-presentation charts
-Key Results
+`data/dp_results_summary.csv` contains per-query results for each mechanism and privacy budget, including:
 
-Our experiments showed:
+- query name
+- mechanism
+- epsilon
+- true value when applicable
+- mean noisy value for scalar queries
+- MAE
+- MSE
 
-As ε increases, error decreases for both mechanisms
-Laplace outperformed Gaussian across all tested queries and privacy budgets
-The histogram query showed the clearest difference between the two mechanisms
-The mean query had the smallest error because of its low sensitivity
-Overall Conclusion
+## Example Findings
 
-For the low-sensitivity aggregate queries tested in this project, the Laplace mechanism provided a better privacy-utility balance than the Gaussian mechanism.
+The current saved results in `data/dp_results_summary.csv` show:
 
-Example Result Summary
-Count Query MAE
-Epsilon	Laplace	Gaussian
-0.1	9.1136	37.0213
-0.5	1.8797	7.1031
-1.0	1.0359	4.1219
-2.0	0.5650	2.0497
-Mean Age MAE
-Epsilon	Laplace	Gaussian
-0.1	0.0235	0.0981
-0.5	0.0050	0.0187
-1.0	0.0025	0.0098
-2.0	0.0013	0.0045
-Education Histogram MAE
-Epsilon	Laplace	Gaussian
-0.1	9.8272	38.6114
-0.5	1.9925	7.8826
-1.0	0.9931	3.7743
-2.0	0.5037	1.9694
-Course Information
-Course: CS4413 Winter 2026
-Project Title: Differential Privacy in Data Analytics
-Team Members
-Khaled Al Tamimi
-Omar Mattar
-Afif Saba
-References
-C. Dwork, F. McSherry, K. Nissim, and A. Smith, Calibrating noise to sensitivity in private data analysis, TCC 2006.
-K. Nissim, S. Raskhodnikova, and A. Smith, Smooth sensitivity and sampling in private data analysis, STOC 2007.
-B. Balle and Y.-X. Wang, Improving the Gaussian mechanism for differential privacy, ICML 2018.
-I. Mironov, Rényi differential privacy, CSF 2017.
-License
+- error decreases as `epsilon` increases
+- Laplace has lower error than Gaussian for the tested queries and settings
+- histogram queries show a larger utility gap between the two mechanisms
 
-This repository is for academic and educational use.
+Example count-query MAE values:
+
+| Epsilon | Laplace | Gaussian |
+| --- | ---: | ---: |
+| 0.1 | 9.1136 | 37.0213 |
+| 0.5 | 1.8797 | 7.1031 |
+| 1.0 | 1.0359 | 4.1219 |
+| 2.0 | 0.5650 | 2.0497 |
+
+## Course Information
+
+- Course: CS4413 Winter 2026
+- Project Title: Differential Privacy in Data Analytics
+
+Team members:
+
+- Khaled Al Tamimi
+- Omar Mattar
+- Afif Saba
+
+## References
+
+[1] C. Dwork, F. McSherry, K. Nissim, and A. Smith, “Calibrating noise to sensitivity in private data analysis,” in Theory of Cryptography (TCC 2006), 2006, pp. 265–284.
+[2] K. Nissim, S. Raskhodnikova, and A. Smith, “Smooth sensitivity and sampling in private data analysis,” in Proceedings of the ACM Symposium on Theory of Computing, 2007, pp. 75–84.
+[3] B. Balle and Y.-X. Wang, “Improving the Gaussian mechanism for differential privacy: Analytical calibration and optimal denoising,” in Proceedings of the 35th International Conference on Machine Learning, 2018.
+[4] I. Mironov, “Rényi differential privacy,” in Proceedings of the IEEE 30th Computer Security Foundations Symposium, 2017, pp. 263–275.
+[5] J. Near, D. Darais, N. Lefkovitz, and G. Howarth, Guidelines for Evaluating Differential Privacy Guarantees, NIST Special Publication 800-226, 2025.
+[6] OpenDP, “A framework to understand DP,” OpenDP Documentation.
+[7] Google, “Google’s differential privacy libraries,” GitHub repository.
+[8] S. Haney, D. Desfontaines, L. Hartman, R. Shrestha, and M. Hay, “Precision-based attacks and interval refining: how to break, then fix, differential privacy on finite computers,” arXiv:2207.13793, 2022.
+[9] UCI Machine Learning Repository, “Adult Data Set.”
+
+## Notes
+
+The script downloads the Adult dataset from UCI at runtime, so regenerating the results requires an internet connection.

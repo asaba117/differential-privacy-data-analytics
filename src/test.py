@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from math import sqrt, log
+from pathlib import Path
 
 # -----------------------------
 # Config
@@ -17,6 +18,8 @@ EPSILONS = [0.1, 0.5, 1.0, 2.0]
 DELTA = 1e-5
 TRIALS = 200
 SEED = 42
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
 
 # Use fixed bounds for age to avoid unbounded / unstable sensitivity
 AGE_MIN = 17
@@ -183,6 +186,7 @@ def print_table(title, df):
 # -----------------------------
 def main():
     rng = np.random.default_rng(SEED)
+    DATA_DIR.mkdir(exist_ok=True)
 
     df = load_adult_data()
     stats = baseline_stats(df)
@@ -268,11 +272,13 @@ def main():
 
     # Save CSVs for report tables / plotting
     all_results = pd.concat([count_df, mean_df, hist_df], ignore_index=True)
-    all_results.to_csv("dp_results_summary.csv", index=False)
-    stats["education_hist"].rename("true_count").to_csv("education_histogram_true.csv")
+    results_path = DATA_DIR / "dp_results_summary.csv"
+    histogram_path = DATA_DIR / "education_histogram_true.csv"
+    all_results.to_csv(results_path, index=False)
+    stats["education_hist"].rename("true_count").to_csv(histogram_path)
 
-    print("\nSaved: dp_results_summary.csv")
-    print("Saved: education_histogram_true.csv")
+    print(f"\nSaved: {results_path}")
+    print(f"Saved: {histogram_path}")
 
 
 if __name__ == "__main__":
