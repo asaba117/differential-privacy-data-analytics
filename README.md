@@ -170,15 +170,23 @@ Team members:
 
 ## References
 
-[1] C. Dwork, F. McSherry, K. Nissim, and A. Smith, “Calibrating noise to sensitivity in private data analysis,” in Theory of Cryptography (TCC 2006), 2006, pp. 265–284.
-[2] K. Nissim, S. Raskhodnikova, and A. Smith, “Smooth sensitivity and sampling in private data analysis,” in Proceedings of the ACM Symposium on Theory of Computing, 2007, pp. 75–84.
-[3] B. Balle and Y.-X. Wang, “Improving the Gaussian mechanism for differential privacy: Analytical calibration and optimal denoising,” in Proceedings of the 35th International Conference on Machine Learning, 2018.
-[4] I. Mironov, “Rényi differential privacy,” in Proceedings of the IEEE 30th Computer Security Foundations Symposium, 2017, pp. 263–275.
-[5] J. Near, D. Darais, N. Lefkovitz, and G. Howarth, Guidelines for Evaluating Differential Privacy Guarantees, NIST Special Publication 800-226, 2025.
-[6] OpenDP, “A framework to understand DP,” OpenDP Documentation.
-[7] Google, “Google’s differential privacy libraries,” GitHub repository.
-[8] S. Haney, D. Desfontaines, L. Hartman, R. Shrestha, and M. Hay, “Precision-based attacks and interval refining: how to break, then fix, differential privacy on finite computers,” arXiv:2207.13793, 2022.
-[9] UCI Machine Learning Repository, “Adult Data Set.”
+1. C. Dwork, F. McSherry, K. Nissim, and A. Smith, “Calibrating noise to sensitivity in private data analysis,” in Theory of Cryptography (TCC 2006), 2006, pp. 265–284.
+
+2.  K. Nissim, S. Raskhodnikova, and A. Smith, “Smooth sensitivity and sampling in private data analysis,” in Proceedings of the ACM Symposium on Theory of Computing, 2007, pp. 75–84.
+
+3.  B. Balle and Y.-X. Wang, “Improving the Gaussian mechanism for differential privacy: Analytical calibration and optimal denoising,” in Proceedings of the 35th International Conference on Machine Learning, 2018.
+
+4.  I. Mironov, “Rényi differential privacy,” in Proceedings of the IEEE 30th Computer Security Foundations Symposium, 2017, pp. 263–275.
+
+5.  J. Near, D. Darais, N. Lefkovitz, and G. Howarth, Guidelines for Evaluating Differential Privacy Guarantees, NIST Special Publication 800-226, 2025.
+
+6. OpenDP, “A framework to understand DP,” OpenDP Documentation.
+
+7. Google, “Google’s differential privacy libraries,” GitHub repository.
+
+8.  S. Haney, D. Desfontaines, L. Hartman, R. Shrestha, and M. Hay, “Precision-based attacks and interval refining: how to break, then fix, differential privacy on finite computers,” arXiv:2207.13793, 2022.
+
+9. UCI Machine Learning Repository, “Adult Data Set.”
 
 ## Notes
 
